@@ -224,6 +224,27 @@ main.compare{padding-top:56px;padding-bottom:24px}
 .speech .src-link{display:block;padding:0 16px 14px;font-size:12.5px;color:var(--muted)}
 .speech .quote{margin:0;padding:14px 16px 0;font-size:15px;font-weight:700;line-height:1.55}
 .debate-note a{color:inherit}
+.issue{--c:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px 18px 6px}
+.iss-lead{margin:0 0 18px;font-size:15.5px;line-height:1.75}
+.iss-block{border-top:1px solid var(--line);padding:16px 0 12px}
+.iss-block h3{margin:0 0 10px;font-size:15px;font-weight:800}
+.iss-block h4{margin:0 0 6px;font-size:14px;font-weight:800}
+.issue .points{padding:0}
+.iss-terms,.iss-sides{margin:0;display:grid;gap:12px}
+.iss-terms div,.iss-sides div{display:grid;grid-template-columns:minmax(0,200px) 1fr;gap:4px 16px}
+.iss-terms dt,.iss-sides dt{font-weight:800;font-size:14.5px}
+.iss-terms dt small{display:block;font-weight:600;font-size:12.5px;color:var(--muted);margin-top:2px}
+.iss-terms dd,.iss-sides dd{margin:0;font-size:14.5px;line-height:1.65}
+.iss-tl{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.iss-tl li{display:grid;grid-template-columns:92px 1fr;gap:12px;font-size:14.5px;line-height:1.65}
+.iss-tl time{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+.iss-pc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.iss-pc>div{background:var(--soft);border-radius:12px;padding:12px 14px}
+.iss-note{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+.iss-note a,.iss-src a{color:inherit}
+.iss-src{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.iss-src a{display:inline-block;padding:5px 9px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--muted);text-decoration:none}
+@media (max-width:640px){.iss-terms div,.iss-sides div{grid-template-columns:1fr}.iss-pc{grid-template-columns:1fr}.iss-tl li{grid-template-columns:1fr;gap:0}.issue{padding:16px 14px 4px}}
 .pledges .src-no{font-size:12px;color:var(--muted);white-space:nowrap;text-decoration:underline;text-underline-offset:2px}
 .speech .mat-links{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 14px;margin:0;list-style:none}
 .speech .mat-links a{display:inline-block;padding:5px 9px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--muted);text-decoration:none;line-height:1.3}
@@ -278,6 +299,15 @@ footer.site .link-btn{font:inherit;color:inherit;background:none;border:0;paddin
 <div id="slates"></div>
 
 <main class="wrap compare">
+  <section aria-labelledby="issue-title" id="issues">
+    <div class="sec-head">
+      <div><h2 id="issue-title">쟁점 해설</h2><p>이번 선거에서 많이 이야기되는 민주노총 현안의 배경과 경과를 정리했어요. 11월 10일 기준이에요.</p></div>
+      <div class="tools" role="tablist" aria-label="쟁점" id="issue-tabs"></div>
+    </div>
+    <div class="issue" id="issue" role="tabpanel" aria-labelledby="issue-title"></div>
+    <p class="debate-note">공식 자료(고용노동부·민주노총 발표)와 여러 언론 보도를 맞대어 사실 위주로 정리했어요. 한쪽의 집계나 주장은 그렇다고 밝혀 두었고, 어느 후보조의 입장도 대변하지 않아요. 진행 중인 사안이라 바뀔 수 있으니 출처 원문으로 확인해 주세요.</p>
+  </section>
+
   <section aria-labelledby="pub-title">
     <div class="sec-head">
       <div><h2 id="pub-title">선본 정책 자료 모아 보기</h2><p>각 후보조가 선관위 <a href="https://election.kctu.org/candidate/" target="_blank" rel="noopener">정책과 공약</a>에 올린 공보물·정책자료집·카드뉴스·웹자보·성명을 주제별로 나란히 봐요. 11월 10일까지 올라온 자료 기준이에요.</p></div>
@@ -783,6 +813,163 @@ function drawPub() {
   }).join("");
   document.querySelectorAll("[data-pub]").forEach((b) => b.onclick = () => { pubTopic = b.dataset.pub; drawPub(); });
 }
+
+// 쟁점 해설: 사회적 교섭·노정교섭·원청교섭 / 메가특구법 / 노동자 정치세력화 — 2026.11.10 기준, 공식 자료와 언론 보도에서 사실 위주로 정리
+const K85 = "https://www.youtube.com/watch?v=F3PtIMzZuaQ";
+const ISSUES = [
+  { id: "social", tab: "사회적 교섭·노정교섭·원청교섭",
+    lead: "정부·경영계와 한자리에서 교섭할지(사회적 교섭), 정부와 직접 교섭할지(노정교섭), 하청 노동자가 원청과 교섭할 길을 어떻게 넓힐지(원청교섭)가 이번 선거의 가장 큰 쟁점이에요. 민주노총은 1999년 이후 공식 사회적 대화 기구에 참여하지 않았고, 2026년 10월 복귀 여부를 대의원대회에 올렸지만 표결하지 못했어요.",
+    terms: [
+      ["사회적 대화·교섭", "노동계 + 경영계 + 정부", "대표 기구는 대통령 자문기구 경제사회노동위원회(경사노위). 지금 노동계 쪽은 한국노총만 참여"],
+      ["노정교섭", "노동계 ↔ 정부", "정부가 사용자이거나 정책 결정권을 가진 사안을 정부와 직접 교섭"],
+      ["원청교섭", "하청노조 ↔ 원청 기업", "개정 노조법 2조로 하청 노동자의 노동조건을 실질적으로 지배하는 원청도 '사용자'가 될 수 있게 됨"],
+    ],
+    timeline: [
+      ["1999.2", "민주노총, 노사정위원회(경사노위 전신) 탈퇴"],
+      ["2020.7", "코로나19 위기 노사정 합의안이 온라인 임시대의원대회에서 반대 약 62%로 부결, 김명환 집행부 총사퇴"],
+      ["2025.9.9", "노조법 2·3조 개정안(이른바 노란봉투법) 공포. 원청의 사용자성 판단 기준과 쟁의행위 손해배상 책임 제한이 핵심"],
+      ["2026.3.10", "개정 노조법 시행. 정부 시행령은 원청교섭에도 교섭창구 단일화를 적용하고, 노동부 해석지침은 사용자성 판단 기준으로 '구조적 통제'를 제시"],
+      ["2026.3.30", "국회 사회적 대화 결과 보고. 6개 의제(AI 전환 등)에 공감대가 있었지만 민주노총이 최종안에 동의하지 않아 완전 합의는 무산. 특고·플랫폼 노동자 사회보험 확대 의제는 수용"],
+      ["2026.7", "민주노총 중앙집행위원회가 경사노위에 그대로 복귀하지 않고 산별 참여를 보장하는 새 교섭 기구를 제안하는 방향을 논의. 복귀 조건으로 ① 합의제 운영 ② 산별 참여 보장 ③ 명칭 변경을 제시"],
+      ["2026.10.7", "제85차 임시대의원대회에서 '사회적 교섭 추진' 안건이 성원 미달로 표결 없이 유회 (아래 자세히)"],
+      ["2026.10.9", "양경수 위원장, 온라인 대의원대회는 열지 않고 위원장 선거로 조합원 뜻을 묻겠다고 밝힘. 이후 3선 출마를 위해 사퇴, 이재진 비상대책위원회 체제로 전환"],
+      ["2026.10.13", "민주노총, 원청교섭 시행령·해석지침과 노동쟁의 대상 지침 폐기를 요구하는 기자회견"],
+    ],
+    sides: [
+      ["정부", "김영훈 노동부 장관은 민주노총의 3대 조건에 공감을 표했어요. 김지형 경사노위 위원장은 명칭 변경까지 검토하겠다면서도, 합의제·산별 참여·명칭 변경은 모두 법을 고쳐야 하는 사안이라고 했어요. 일부 부처는 민주노총과 별도 노정 협의를 하고 있어요."],
+      ["경영계", "민주노총이 참여하면 고용 유연성 논의가 위축될 수 있다는 우려가 보도됐어요."],
+      ["민주노총 집행부(당시)", "AI·산업전환 국면에서 노동 의제를 직접 제기하려면 사회적 교섭이라는 수단이 필요하다고 했어요. 3대 조건을 밖에서 먼저 확약받고 들어가며, 어기면 나와서 싸우면 된다는 입장이었어요."],
+      ["원청교섭 실태 (민주노총 집계)", "개정법 시행 뒤 소속 644개 사업장이 원청에 교섭을 요구했는데, 실제 교섭이 진행 중인 곳은 22곳(3.4%)이라고 밝혔어요. 창구 단일화 때문에 교섭 시작까지 3~4개월이 걸리고, 해석지침이 정부·지자체를 교섭 대상에서 사실상 빼고 있다는 주장이에요. 이 수치에 대한 정부의 공식 반론은 찾지 못했어요."],
+    ],
+    congress: {
+      title: "10월 7일 제85차 임시대의원대회 들여다보기",
+      facts: [
+        "재적 대의원 1,766명. 개회 때 997명이 성원 보고됐고, 긴급안건 표결 때 재석은 1,061명이었어요.",
+        "안건: 3대 원칙(합의제·산별 참여·명칭과 의결구조 개편)을 정부와 먼저 합의하면 경사노위에 참여해 법·제도 개정을 마무리한다는 '사회적 교섭 추진'.",
+        "현장 긴급안건 '메가특구 특별법 사회적 대화 참여 중단 및 저지 총파업의 건'은 재석 1,061명 중 찬성 360명으로 상정되지 않았어요.",
+        "3시간 넘는 질의응답과 찬반 토론(각 8명) 뒤 표결로 넘어가는 과정에서 토론을 더 하자는 쪽과 표결하자는 쪽이 부딪쳤고, 다수 대의원이 이석했어요.",
+        "재석이 과반(884명)에 못 미쳐 표결 없이 폐회했어요. 남은 인원은 언론 보도로는 790명, 영상 요약으로는 621명이에요.",
+      ],
+      pro: [
+        "교섭은 목적이 아니라 요구를 관철하는 수단이고, 투쟁과 병행해야 한다",
+        "산업전환·미래대응기금·메가특구 등 정책 방향이 정해지는 시기를 놓치면 안 된다",
+        "택배 사회적 합의처럼 특고·플랫폼 노동자 문제는 사회적 교섭으로 기준을 만들 수 있다",
+        "조합원 설문에서 87.8%가 사회적 교섭에 찬성했다",
+        "참여하지 않는 사이 다른 노총과 정부의 합의로 불이익을 겪은 경험이 있다(공무원 보수·타임오프 등)",
+      ],
+      con: [
+        "27년 만의 방침 전환을 현장 조합원 토론 없이 대의원대회 한 번으로 정하는 건 성급하다",
+        "한국노총·경영계가 함께하는 구조에서 합의제·법 개정이 지켜진다는 보장이 없다",
+        "노동특례가 담긴 메가특구법 논의의 들러리가 될 수 있다",
+        "의제·투쟁력·계획이 준비되지 않았고, 지금은 현장 투쟁을 조직할 때다",
+        "일하는사람기본법 등을 추진하는 정부와의 대화로는 특고·플랫폼 권리를 지킬 수 없다",
+      ],
+      note: `민주노총 공식 유튜브의 대의원대회 생중계 <a href="${K85}" target="_blank" rel="noopener">영상</a>을 요약한 내용이에요. 발언자 개인 이름은 빼고 논리만 옮겼어요.`,
+    },
+    check: [
+      "합의제·산별 참여·명칭 변경은 경사노위법 개정이 필요해요. 정부가 동의해도 국회 입법 절차가 남아요.",
+      "원청교섭 수치(644곳 중 22곳)는 민주노총 집계예요. 정부 통계와 대조되지 않았어요.",
+    ],
+    sources: [
+      ["경향신문 · 경사노위 복귀 논의 보류 (10.9)", "https://www.khan.co.kr/article/202610091651001/"],
+      ["한국경제 · 대의원 정족수 미달 (10.7)", "https://www.hankyung.com/article/202610078907i"],
+      ["민주노총 · 10.7 대의원대회 보도자료", "https://nodong.org/statement/7946512"],
+      ["제85차 임시대의원대회 영상", K85],
+      ["한국경제 · 7월 중앙집행위원회", "https://www.hankyung.com/article/2026072327081"],
+      ["뉴스1 · 복귀 조건과 정부 입장", "https://www.news1.kr/economy/employment-labor/6316961"],
+      ["뉴시스 · 김지형 경사노위 위원장", "https://www.newsis.com/view/NISX20260319_0003555119"],
+      ["경향신문 · 국회 사회적 대화 AI안", "https://www.khan.co.kr/article/202603191321001"],
+      ["머니투데이 · 2020 노사정 합의 부결", "https://www.mt.co.kr/economy/2020/07/24/2020072414501419959"],
+      ["매일노동뉴스 · 이재진 비대위 출범", "https://www.labortoday.co.kr/news/articleView.html?idxno=237476"],
+      ["고용노동부 · 개정 노조법 시행", "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=19047"],
+      ["매일노동뉴스 · 시행령·해석지침 확정", "https://www.labortoday.co.kr/news/articleView.html?idxno=232847"],
+      ["민주노총 · 원청교섭 실태 보도자료", "https://nodong.org/statement/7933501"],
+      ["민주노총 · 10.13 기자회견", "https://nodong.org/statement/7948077"],
+    ] },
+
+  { id: "mega", tab: "메가특구법",
+    lead: "정식 이름은 '지방주도성장을 위한 초광역권전략산업특구 지정 및 운영에 관한 특별법'(초광역특구법)이에요. 반도체·AI 같은 전략산업 특구를 권역별로 지정해 대규모 투자를 끌어오려는 법인데, 일부 법안에 담긴 노동시간·기간제 특례를 두고 노정이 맞서고 있어요.",
+    terms: [
+      ["목적 (정부 설명)", "지방정부 설계 + 정부 지원", "'5극3특' 지방 성장 전략의 하나. 권역별 전략산업 특구를 지정해 대규모 기업 투자를 유치"],
+      ["규제 특례", "약 320개 (보도마다 300여 개)", "단일 법률로는 역대 최대 규모로 보도. 반도체 산단 조성 기간 단축, AI 데이터센터 인허가 일괄처리 등"],
+      ["노동특례 (박상혁 의원안)", "고소득 연구개발 인력 등", "소득 상위 3% 관리·전문·연구개발 인력은 노사 서면합의로 주 52시간 초과 허용, 선택적 근로시간제 정산기간 확대, 기간제 사용기간 4년"],
+    ],
+    timeline: [
+      ["2026.4.15", "이재명 대통령 주재 규제합리화위원회 1차 회의 이후 논의 본격화"],
+      ["2026.10.7", "민주노총 임시대의원대회에서 '메가특구 사회적 대화 참여 중단·저지 총파업' 긴급안건이 상정되지 못함(재석 1,061명 중 찬성 360명)"],
+      ["2026.10.20", "박상혁 의원(더불어민주당), 노동특례를 담은 법안 발의"],
+      ["2026.10.21", "최기상 의원(더불어민주당), 노동특례를 뺀 법안 발의. 민주당은 두 안을 병합 심사할 방침"],
+      ["2026.11.2", "'초광역특구법 관련 원 포인트 사회적 대화' 첫 차관급 운영협의체. 노동부·산업부, 한국노총, 민주노총, 경총, 대한상의 참여. 실무협의 6차례로 의제 순서 확정"],
+      ["2026.11.6", "7차 실무협의체: 정주 지원·인력 양성 논의"],
+      ["2026.11.13", "8차 실무협의체 예정"],
+    ],
+    agenda: ["① 기본목표·정주지원·인력양성", "② 산업안전·보건, 노동시간·건강권 (주 52시간 예외는 여기서)", "③ 고용형태·노동자 보호", "④ 노사관계·참여 등"],
+    sides: [
+      ["정부·여당", "처음에는 연내 처리를 추진했지만, 지금은 시한을 정하지 않고 사회적 대화 합의를 토대로 추진하겠다는 입장이에요(김영훈 노동부 장관)."],
+      ["경영계", "첨단기업 유치와 산업 경쟁력을 위해 노동특례가 필요하다는 입장으로 보도됐어요."],
+      ["한국노총", "세제·재정 지원에 노동시간 규제 완화까지 더하는 게 맞는지 문제를 제기했고, 지금으로서는 현행 제도를 지키는 게 최선이라고 했어요."],
+      ["민주노총 (비대위)", "비대위가 민감한 결정을 내리기는 어렵지만 사회적 대화에는 책임 있게 참여하겠다는 입장이에요. 노동특례가 장시간 노동과 건강권 침해를 낳는다며 반대해요."],
+    ],
+    check: [
+      "핵심 쟁점(주 52시간 예외 등)은 민주노총 선거(11.19~25) 뒤에 다뤄질 가능성이 보도됐어요.",
+      "특례 개수와 조문은 보도마다 달라요. 정확한 내용은 국회 의안정보시스템의 법안 원문으로 확인해 주세요.",
+    ],
+    sources: [
+      ["경향신문 · 노동특례 논의 본격화 (11.2)", "https://www.khan.co.kr/article/202611021354001/"],
+      ["고용노동부 · 원 포인트 사회적 대화 7차", "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=20211"],
+      ["메트로서울 · 박상혁 의원안", "https://www.metroseoul.co.kr/article/20261020500450"],
+      ["이투데이 · 노동특례 뺀 법안", "https://www.etoday.co.kr/news/view/2638492"],
+      ["SBS Biz · 320여 개 규제특례", "https://biz.sbs.co.kr/amp/article/20000341803"],
+      ["헤럴드경제 · 정주지원·인력양성 논의", "https://biz.heraldcorp.com/article/10928626"],
+      ["제85차 임시대의원대회 영상", K85],
+    ] },
+
+  { id: "politics", tab: "노동자 정치세력화",
+    lead: "민주노총이 선거와 정당에 어떻게 관여할지(정치방침)는 오래된 쟁점이에요. 한때 특정 진보정당을 배타적으로 지지했지만, 진보정당이 나뉜 뒤로는 방침을 세우는 일 자체가 어려워졌어요. 2025년 대선에서는 처음으로 총연맹 차원의 방침을 정하지 못했어요.",
+    timeline: [
+      ["2000년대~", "민주노동당, 이후 통합진보당을 배타적으로 지지. 분당과 해산을 거치며 10년 가까이 정치방침이 사실상 공백이었다는 평가가 있어요"],
+      ["2023.9", "제77차 임시대의원대회에서 진보정당과 연합정당 건설부터 정책연대·후보 단일화·공동 선거운동까지 열어 두는 '공동 대응' 방침을 정함. 간부가 민주노총 이름으로 국민의힘·더불어민주당과 위성정당을 지지하는 것은 금지"],
+      ["2024.3~4", "총선 앞 진보당의 민주당 계열 비례연합정당 참여로 내부 논란. 중앙집행위원회는 노동당 후보 1명만 승인했고, 일부 산별노조가 노동당·녹색정의당 지지를 따로 선언"],
+      ["2025.5", "대선 방침을 정하지 못함(출범 30년 만에 처음이라는 평가). '진보정당 및 연대연합 후보 지지' 집행부안과 권영국 후보 지지안이 모두 무산됨. 공공운수·금속 등 산별노조와 지역본부들이 권영국 후보를 따로 지지했고, 진보정당과 산별노조가 함께하는 '사회대전환 연대회의'가 만들어짐"],
+      ["2026.4~5", "지방선거(6.3)에서 진보 4당(진보당·노동당·녹색당·정의당)과 정책협약, 지역본부별 진보후보 정책협약과 후보 확약서 추진"],
+    ],
+    sides: [
+      ["갈등의 축", "진보정당만 지지할지, 진보정당과 연대한 후보까지 넓힐지, 그리고 민주당과의 관계를 어떻게 볼지가 해마다 반복되는 쟁점이에요."],
+      ["이번 선거에서", "독자 정당(민주노총당) 창당, 진보정당과의 공동활동, 진보정당 단결을 위한 역할 합의 우선, 정당에 끌려가지 않는 정치 등 후보조마다 방향이 달라요. 자세한 내용은 아래 '선본 정책 자료'의 정치·입법 탭과 '위원장 후보 연쇄인터뷰'에서 볼 수 있어요."],
+    ],
+    check: [
+      "배타적 지지 방침을 공식 폐기한 결정 문서와 2026년 정치방침 의결문은 찾지 못했어요.",
+    ],
+    sources: [
+      ["매일노동뉴스 · 총선은 공동대응, 지선은 연합정당", "https://www.labortoday.co.kr/news/articleView.html?idxno=217277"],
+      ["노동과세계 · 노동자 정치세력화", "https://worknworld.kctu.org/news/articleView.html?idxno=503308"],
+      ["매일노동뉴스 · 총선 지지후보 승인", "https://www.labortoday.co.kr/news/articleView.html?idxno=220230"],
+      ["머니투데이 · 2025 대선 방침", "https://www.mt.co.kr/society/2025/05/21/2025052121433063575"],
+      ["경향신문 · 사회대전환 연대회의", "https://www.khan.co.kr/article/202505310900001"],
+      ["민주노총 · 2026 지방선거 요구", "https://nodong.org/statement/7927842"],
+    ] },
+];
+
+let issueTab = ISSUES[0].id;
+function drawIssues() {
+  const it = ISSUES.find((x) => x.id === issueTab);
+  $("#issue-tabs").innerHTML = ISSUES.map((x) => `<button class="tool" type="button" role="tab" data-issue="${x.id}" aria-selected="${x.id === issueTab}" aria-pressed="${x.id === issueTab}">${esc(x.tab)}</button>`).join("");
+  const list = (arr) => `<ul class="points">${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  const c = it.congress;
+  $("#issue").innerHTML = `
+    <p class="iss-lead">${esc(it.lead)}</p>
+    ${it.terms ? `<div class="iss-block"><h3>한눈에</h3><dl class="iss-terms">${it.terms.map(([a, b, d]) => `<div><dt>${esc(a)}<small>${esc(b)}</small></dt><dd>${esc(d)}</dd></div>`).join("")}</dl></div>` : ""}
+    <div class="iss-block"><h3>경과</h3><ol class="iss-tl">${it.timeline.map(([d, t]) => `<li><time>${esc(d)}</time><span>${esc(t)}</span></li>`).join("")}</ol></div>
+    ${it.agenda ? `<div class="iss-block"><h3>원 포인트 사회적 대화 의제 순서</h3>${list(it.agenda)}</div>` : ""}
+    ${c ? `<div class="iss-block"><h3>${esc(c.title)}</h3>${list(c.facts)}
+      <div class="iss-pc"><div><h4>찬성 쪽 논리</h4>${list(c.pro)}</div><div><h4>반대 쪽 논리</h4>${list(c.con)}</div></div>
+      <p class="iss-note">${c.note}</p></div>` : ""}
+    <div class="iss-block"><h3>주체별 입장</h3><dl class="iss-sides">${it.sides.map(([a, b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("")}</dl></div>
+    <div class="iss-block"><h3>더 확인할 점</h3>${list(it.check)}</div>
+    <div class="iss-block"><h3>출처</h3><ul class="iss-src">${it.sources.map(([l, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(l)} ↗</a></li>`).join("")}</ul></div>`;
+  document.querySelectorAll("[data-issue]").forEach((b) => b.onclick = () => { issueTab = b.dataset.issue; drawIssues(); });
+}
+drawIssues();
 
 let rally = RALLIES[0].id, ivTopic = IV_TOPICS[0][0];
 function speechCard(n, inner) {
